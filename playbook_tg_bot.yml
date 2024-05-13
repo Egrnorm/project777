@@ -221,4 +221,4 @@
 
     - name: start bot
       become: yes
-      command: "python3 /usr/bot_project/bot/tgbot.py"
+      command: "python3 /usr/bot_project/tgbot.py"
