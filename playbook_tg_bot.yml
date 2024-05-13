@@ -211,13 +211,13 @@
     - name: install python dependencies
       become: yes
       pip:
-        requirements: "/usr/bot_project/bot/requirements.txt"
+        requirements: "/usr/bot_project/requirements.txt"
 
     - name: copy .env_tg
       become: yes
       copy:
         src: ".env_tg"
-        dest: "/usr/bot_project/bot/.env"
+        dest: "/usr/bot_project/.env"
 
     - name: start bot
       become: yes
