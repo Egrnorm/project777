@@ -206,7 +206,7 @@
       ansible.builtin.git:
         repo: "https://github.com/Egrnorm/project777.git"
         dest: "/usr/bot_project/"
-        version: master
+        version: normal
 
     - name: install python dependencies
       become: yes
