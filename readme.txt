@@ -1,0 +1,35 @@
+Нужно создать файл .env, который будет отвечать за то, чтобы ansible успешно отрабатывал.
+[ПРИМЕР .env файла]
+RM_HOST: '192.168.1.105'
+RM_PORT: '22'
+RM_USER: 'root'
+RM_PASSWORD: 'Qq123456'
+
+DB_USER: 'postgres'
+DB_PASSWORD: 'Qq12345'
+DB_HOST: '192.168.1.101'
+DB_PORT: '5432'
+DB_DATABASE: 'pt_db'
+
+DB_REPL_USER: 'postgres'
+DB_REPL_PASSWORD: 'Qq12345'
+DB_REPL_HOST: '192.168.1.103'
+DB_REPL_PORT: '22'
+Нужно создать .env_tg, который будет отвечать за область переменных телеграмм бота, чтобы он успешно работал
+[ПРИМЕР .env_tg файла]
+TOKEN = "TOKEN"
+RM_HOST = '192.168.1.105'
+RM_PORT = '22'
+RM_USER = 'root'
+RM_PASSWORD = 'Qq123456'
+
+DB_USER ='postgres'
+DB_PASSWORD ='Qq12345'
+DB_HOST ='192.168.1.101'
+DB_PORT = '5432'
+DB_DATABASE = 'pt_db'
+
+DB_REPL_USER = 'postgres'
+DB_REPL_PASSWORD = 'Qq12345'
+DB_REPL_HOST = '192.168.1.103'
+DB_REPL_PORT = '22'

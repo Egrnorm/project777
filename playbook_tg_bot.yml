@@ -1,0 +1,224 @@
+- hosts: db_host
+  vars_files:
+    - .env
+  tasks:
+    - name: install dependencies for PostgreSQL
+      become: yes
+      apt:
+        pkg:
+        - git
+        - bash
+        - openssl
+        - libssl-dev
+        - libssl-doc
+        state: latest
+        update_cache: true
+
+    - name: install PostgreSQL 
+      become: yes
+      apt:
+        pkg:
+          - postgresql
+          - postgresql-contrib
+          - libpq-dev
+          - python3-psycopg2
+        state: latest
+        update_cache: true
+    
+    - name: create database
+      become: yes
+      become_user: postgres
+      postgresql_db:
+        name: "{{ DB_DATABASE }}"
+        state: present
+    
+    -
+
+    # - name: change postgres db user
+    #   become: yes
+    #   become_method: sudo
+    #   become_user: postgres
+    #   postgresql_user:
+    #     db: "{{DB_DATABASE}}"
+    #     name: postgres
+    #     password: "{{DB_PASSWORD}}"
+
+    - name: set parameters
+      become: yes
+      become_user: postgres
+      community.postgresql.postgresql_set:
+        name: "{{ item.key }}"
+        value: "{{ item.value }}"
+      with_dict:
+        listen_addresses: '*'
+        wal_level: 'replica'
+        max_wal_senders: '10'
+        log_replication_commands: 'on'
+        wal_log_hints: 'on'
+        logging_collector: 'on'
+        log_directory: '/tmp/'
+        log_filename: 'postgresql.log'
+    
+    - name: allow replication in pg_hba
+      become: yes
+      become_user: postgres
+      postgresql_pg_hba:
+        dest: /etc/postgresql/14/main/pg_hba.conf
+        contype: "host"
+        databases: "replication"
+        users: "all"
+        source: "0.0.0.0/0"
+        method: "md5"
+        create: true
+
+    - name: allow bot in pg_hba
+      become: yes
+      become_user: postgres
+      postgresql_pg_hba:
+        dest: /etc/postgresql/14/main/pg_hba.conf
+        contype: "host"
+        databases: "all"
+        users: "all"
+        source: "0.0.0.0/0"
+        method: "md5"
+        create: true
+
+    - name: copy init.sql
+      copy:
+        src: "init.sql"
+        dest: "~/init.sql"
+
+    - name: read init.sql
+      slurp:
+        src: init.sql
+      register: init
+    
+    - name: initialize database from init.sql
+      become: yes
+      become_user: postgres
+      postgresql_query:
+        db: "{{ DB_DATABASE }}"
+        query: "{{ init.content | b64decode }}"
+        login_user: postgres
+        login_password: "{{ DB_PASSWORD }}"
+    
+    - name: restart postgresql
+      become: yes
+      service:
+        name: postgresql
+        state: restarted
+      environment:
+        POSTGRES_HOST_AUTH_METHOD: "scram-sha-256\nhost replication all 0.0.0.0/0 md5"
+        POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    
+    - name: chmod postgresql.log
+      become: yes
+      file:
+        path: /tmp/postgresql.log
+        mode: 0664
+
+
+- hosts: db_repl_host
+  vars_files:
+    - .env
+  tasks:
+    - name: install dependencies for PostgreSQL
+      become: yes
+      apt:
+        pkg:
+          - bash
+          - openssl
+          - libssl-dev
+          - libssl-doc
+        state: latest
+        update_cache: true
+    
+    - name: install PostgreSQL 
+      become: yes
+      apt:
+        pkg:
+          - postgresql
+          - postgresql-contrib
+          - libpq-dev
+          - python3-psycopg2
+        state: latest
+        update_cache: true
+
+    - name: start postgresql
+      become: yes
+      service:
+        name: postgresql
+        state: started
+
+    - name: set parameters
+      become_user: postgres
+      become: yes
+      community.postgresql.postgresql_set:
+        name: "listen_addresses"
+        value: "*"
+
+    - name: stop postgresql
+      become: yes
+      service:
+        name: postgresql
+        state: stopped
+    
+    - name: remove postgresql directory
+      become: yes
+      file:
+        path: /var/lib/postgresql/data/
+        state: absent
+
+    - name: try pg_basebackup
+      become: yes
+      become_user: postgres
+      retries: 5
+      delay: 5
+      register: result
+      until: result.rc == 0
+      environment:
+        PGUSER: "{{ DB_REPL_USER }}"
+        PGPASSWORD: "{{ DB_REPL_PASSWORD }}"
+      shell: pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replication_slot --host="{{ DB_HOST }}" --port="{{ DB_PORT }}"
+
+    - name: start postgresql
+      become: yes
+      service:
+        name: postgresql
+        state: started
+
+- hosts: tg_bot_host
+  tasks:
+    - name: install apt dependencies 
+      become: yes
+      apt:
+        name:
+          - libpq-dev
+          - gcc
+          - musl-dev
+          - python3-pip
+          - git
+        state: latest
+        update_cache: true
+
+    - name: git clone
+      become: yes
+      ansible.builtin.git:
+        repo: "https://github.com/Egrnorm/project777.git"
+        dest: "/usr/bot_project/"
+        version: master
+
+    - name: install python dependencies
+      become: yes
+      pip:
+        requirements: "/usr/bot_project/bot/requirements.txt"
+
+    - name: copy .env_tg
+      become: yes
+      copy:
+        src: ".env_tg"
+        dest: "/usr/bot_project/bot/.env"
+
+    - name: start bot
+      become: yes
+      command: "python3 /usr/bot_project/bot/tgbot.py"
