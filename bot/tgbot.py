@@ -12,18 +12,7 @@ from telegram import Update, ForceReply
 from dotenv import load_dotenv, find_dotenv
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, ConversationHandler, CallbackContext
 
-# TOKEN = "7081555760:AAGcOF0cV9dE_DPbwlp--nO5O8aNabPG8qU"
-#
-# host = '192.168.1.103'
-# port = '22'
-# username = 'kali'
-# password = 'kali'
-#
-# username_psql = "postgres"
-# password_psql = "Qq123456"
-# host_psql = "192.168.1.105"
-# port_psql = "5432"
-# database_psql = "ptstart"
+
 load_dotenv(find_dotenv())
 updater = Updater(os.getenv('TOKEN'), use_context=True)
 
