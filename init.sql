@@ -11,11 +11,11 @@ BEGIN
 END $$;
 
 CREATE TABLE IF NOT EXISTS emails (
-    id SERIAL PRIMARY KEY,
-    email VARCHAR(100) UNIQUE
+    id serial PRIMARY KEY,
+    email VARCHAR(255) 
+);
+CREATE TABLE IF NOT EXISTS phones (
+    id serial PRIMARY KEY,
+    phone VARCHAR(255)
 );
 
-CREATE TABLE IF NOT EXISTS phones (
-    id SERIAL PRIMARY KEY,
-    phone VARCHAR(20) UNIQUE
-);
