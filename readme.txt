@@ -7,7 +7,7 @@
 DB_HOST = 'database'
 DB_REPL_HOST = 'db_repl_image'
 ==================================================
-Пример .env файла
+[ПРИМЕР .env ФАЙЛА]
 TOKEN = "TOKEN"
 RM_HOST = '192.168.0.102'
 RM_PORT = '22'
