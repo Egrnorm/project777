@@ -147,10 +147,10 @@ def verifyPasswordCommand(update: Update, context):
 
 
 def connectToReplica():
-    host = os.getenv('DB_REPL_HOST')
-    port = os.getenv('DB_REPL_PORT')
-    username = os.getenv('DB_REPL_USER')
-    password = os.getenv('DB_REPL_PASSWORD')
+    host = os.getenv('DB_HOST')
+    port = os.getenv('DB_PORT')
+    username = os.getenv('DB_USER')
+    password = os.getenv('DB_PASSWORD')
     client = paramiko.SSHClient()
     client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
     client.connect(hostname=host, username=username, password=password, port=port)
