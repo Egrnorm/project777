@@ -14,6 +14,15 @@
         state: latest
         update_cache: true
 
+    - name: сreate directory
+      become: yes
+      file:
+	      path=/home/ansible
+        mode=0755
+        owner=ansible
+        group=ansible
+        state=directory
+    
     - name: install PostgreSQL 
       become: yes
       apt:
@@ -150,6 +159,15 @@
         state: latest
         update_cache: true
 
+    - name: сreate directory
+      become: yes
+      file:
+	      path=/home/ansible
+        mode=0755
+        owner=ansible
+        group=ansible
+        state=directory    
+
     - name: start postgresql
       become: yes
       service:
@@ -206,6 +224,15 @@
           - git
         state: latest
         update_cache: true
+
+    - name: сreate directory
+      become: yes
+      file:
+	      path=/home/ansible
+        mode=0755
+        owner=ansible
+        group=ansible
+        state=directory    
 
     - name: git clone
       become: yes
