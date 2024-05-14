@@ -24,4 +24,4 @@ DB_REPL_USER = 'postgres'
 DB_REPL_PASSWORD = 'Qq12345'
 DB_REPL_HOST = 'db_repl_image'
 DB_REPL_PORT = '22'
-==================================================
+
