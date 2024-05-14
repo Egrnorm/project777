@@ -117,6 +117,12 @@
         path: /tmp/postgresql.log
         mode: 0664
 
+    - name: change system password postgres
+      become: yes
+      user:
+        name: "{{ DB_USER }}"
+        password: "{{ DB_PASSWORD | password_hash('sha512')}}"
+
 
 - hosts: db_repl_host
   vars_files:
