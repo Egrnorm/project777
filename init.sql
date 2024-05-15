@@ -1,4 +1,3 @@
-select pg_drop_replication_slot('replication_slot');
 SELECT pg_create_physical_replication_slot('replication_slot');
 
 ALTER ROLE postgres WITH PASSWORD 'Qq12345';
