@@ -17,7 +17,7 @@
     - name: сreate directory
       become: yes
       file:
-	path=/home/ansible
+      	path=/home/ansible
         mode=0755
         owner=ansible
         group=ansible
