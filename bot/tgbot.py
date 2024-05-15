@@ -3,7 +3,7 @@ import os
 import re
 
 import requests
-
+import subprocess
 import psycopg2
 from psycopg2 import Error
 import logging
@@ -155,15 +155,12 @@ def connectToRemote():
 
 
 def get_repl_logs(update: Update, context):
-    client = connectToRemote()
-    stdin, stdout, stderr = client.exec_command('docker logs db_repl_container | head')
-    data = stdout.read() + stderr.read()
-    client.close()
-    decoded_data = data.decode('utf-8')
-    decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
-
-    update.message.reply_text(decoded_data)
-    return ConversationHandler.END
+    command = "cat /tmp/postgresql.log | tail -n 15"
+    res = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if res.returncode != 0 or res.stderr.decode() != "":
+        update.message.reply_text("Can not open log file!")
+    else:
+        update.message.reply_text(res.stdout.decode().strip('\n'))
 
 
 def get_emails(update: Update, context):
