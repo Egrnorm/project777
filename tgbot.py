@@ -321,7 +321,7 @@ def get_critical(update: Update, context):
 
 def get_ps(update: Update, context):
     client = connectToRemote()
-    stdin, stdout, stderr = client.exec_command('ps')
+    stdin, stdout, stderr = client.exec_command('ps | head')
     data = stdout.read() + stderr.read()
     client.close()
     data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
