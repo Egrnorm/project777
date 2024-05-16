@@ -361,8 +361,7 @@ def get_apt_list(update: Update, context):
 
 def get_services(update: Update, context):
     client = connectToRemote()
-    passwd = os.getenv('RM_PASSWORD')
-    stdin, stdout, stderr = client.exec_command(f'echo {passwd} | sudo -S service --status-all | grep +')
+    stdin, stdout, stderr = client.exec_command('systemctl list-units --type=service | grep running')
     data = stdout.read() + stderr.read()
     client.close()
     decoded_data = data.decode('utf-8')
