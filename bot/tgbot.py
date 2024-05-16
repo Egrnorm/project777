@@ -368,7 +368,7 @@ def get_services(update: Update, context):
     decoded_data = data.decode('utf-8')
     decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
 
-    update.message.reply_text(decoded_data)a)
+    update.message.reply_text(decoded_data)
     return ConversationHandler.END
 def helpCommand(update: Update, context):
     help_text = "Этот бот повторяет твои сообщения. Также имеет команды:\n" \
