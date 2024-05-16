@@ -23,7 +23,7 @@ logger = logging.getLogger(__name__)
 
 def start(update: Update, context):
     user = update.effective_user
-    update.message.reply_text(f'Привет {user.full_name}!')
+    update.message.reply_text(f'Привет жесткицй талант {user.full_name}!')
 
 
 def echo(update: Update, context):
