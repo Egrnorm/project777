@@ -244,8 +244,10 @@ def get_release(update: Update, context):
     stdin, stdout, stderr = client.exec_command('uname -r')
     data = stdout.read() + stderr.read()
     client.close()
-    data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
-    update.message.reply_text(data)
+    decoded_data = data.decode('utf-8')
+    decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
+
+    update.message.reply_text(decoded_data)
     return ConversationHandler.END
 
 def get_uptime(update: Update, context):
@@ -262,8 +264,10 @@ def get_df(update: Update, context):
     stdin, stdout, stderr = client.exec_command('df')
     data = stdout.read() + stderr.read()
     client.close()
-    data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
-    update.message.reply_text(data)
+    decoded_data = data.decode('utf-8')
+    decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
+
+    update.message.reply_text(decoded_data)
     return ConversationHandler.END
 
 def get_free(update: Update, context):
@@ -271,8 +275,10 @@ def get_free(update: Update, context):
     stdin, stdout, stderr = client.exec_command('free')
     data = stdout.read() + stderr.read()
     client.close()
-    data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
-    update.message.reply_text(data)
+    decoded_data = data.decode('utf-8')
+    decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
+
+    update.message.reply_text(decoded_data)
     return ConversationHandler.END
 
 def get_mpstat(update: Update, context):
@@ -280,8 +286,10 @@ def get_mpstat(update: Update, context):
     stdin, stdout, stderr = client.exec_command('mpstat')
     data = stdout.read() + stderr.read()
     client.close()
-    data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
-    update.message.reply_text(data)
+    decoded_data = data.decode('utf-8')
+    decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
+
+    update.message.reply_text(decoded_data)
     return ConversationHandler.END
 
 def get_w(update: Update, context):
@@ -290,8 +298,10 @@ def get_w(update: Update, context):
     stdin, stdout, stderr = client.exec_command('w')
     data = stdout.read() + stderr.read()
     client.close()
-    data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
-    update.message.reply_text(data)
+    decoded_data = data.decode('utf-8')
+    decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
+
+    update.message.reply_text(decoded_data)
     return ConversationHandler.END
 
 def get_auths(update: Update, context):
@@ -299,8 +309,10 @@ def get_auths(update: Update, context):
     stdin, stdout, stderr = client.exec_command('last | head')
     data = stdout.read() + stderr.read()
     client.close()
-    data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
-    update.message.reply_text(data)
+    decoded_data = data.decode('utf-8')
+    decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
+
+    update.message.reply_text(decoded_data)
     return ConversationHandler.END
 
 def get_critical(update: Update, context):
@@ -308,8 +320,10 @@ def get_critical(update: Update, context):
     stdin, stdout, stderr = client.exec_command('journalctl --system -p info | tail -n 5')
     data = stdout.read() + stderr.read()
     client.close()
-    data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
-    update.message.reply_text(data)
+    decoded_data = data.decode('utf-8')
+    decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
+
+    update.message.reply_text(decoded_data)
     return ConversationHandler.END
 
 def get_ps(update: Update, context):
@@ -317,8 +331,10 @@ def get_ps(update: Update, context):
     stdin, stdout, stderr = client.exec_command('ps | head')
     data = stdout.read() + stderr.read()
     client.close()
-    data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
-    update.message.reply_text(data)
+    decoded_data = data.decode('utf-8')
+    decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
+
+    update.message.reply_text(decoded_data)
     return ConversationHandler.END
 
 def get_ss(update: Update, context):
@@ -326,8 +342,10 @@ def get_ss(update: Update, context):
     stdin, stdout, stderr = client.exec_command('ss | head')
     data = stdout.read() + stderr.read()
     client.close()
-    data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
-    update.message.reply_text(data)
+    decoded_data = data.decode('utf-8')
+    decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
+
+    update.message.reply_text(decoded_data)
     return ConversationHandler.END
 
 def get_apt_list(update: Update, context):
@@ -335,8 +353,10 @@ def get_apt_list(update: Update, context):
     stdin, stdout, stderr = client.exec_command('apt list | head')
     data = stdout.read() + stderr.read()
     client.close()
-    data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
-    update.message.reply_text(data)
+    decoded_data = data.decode('utf-8')
+    decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
+
+    update.message.reply_text(decoded_data)
     return ConversationHandler.END
 
 def get_services(update: Update, context):
@@ -345,8 +365,10 @@ def get_services(update: Update, context):
     stdin, stdout, stderr = client.exec_command(f'echo {passwd} | sudo -S service --status-all | head')
     data = stdout.read() + stderr.read()
     client.close()
-    data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
-    update.message.reply_text(data)
+    decoded_data = data.decode('utf-8')
+    decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
+
+    update.message.reply_text(decoded_data)a)
     return ConversationHandler.END
 def helpCommand(update: Update, context):
     help_text = "Этот бот повторяет твои сообщения. Также имеет команды:\n" \
