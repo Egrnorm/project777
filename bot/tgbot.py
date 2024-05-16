@@ -38,6 +38,7 @@ def findPhoneNumbers(update: Update, context):
     #phoneNumRegex = re.compile(r'8 \(\d{3}\) \d{3}-\d{2}-\d{2}') # 8 (000) 000-00-00
     phoneNumRegex = re.compile(r'8[\- ]?\(?\d{3}\)?[\- ]?\d{3}[\- ]?\d{2}[\- ]?\d{2}|\+7[\- ]?\(?\d{3}\)?[\- ]?\d{3}[\- ]?\d{2}[\- ]?\d{2}')
     phoneNumberList = phoneNumRegex.findall(user_input)
+    phoneNumberList = list(set(phoneNumberList))
     if not phoneNumberList:
         update.message.reply_text('Телефонные номера не найдены')
         return ConversationHandler.END
@@ -87,6 +88,7 @@ def findEmailAddress(update: Update, context):
     emailRegex = re.compile(r'\w+@+\w+.+\w+') # какойтотекст@какойтотекст.какойтотекст
 
     emailList = emailRegex.findall(user_input)
+    emailList = list(set(emailList))
     if not emailList:
         update.message.reply_text('Email не найден')
         return ConversationHandler.END
