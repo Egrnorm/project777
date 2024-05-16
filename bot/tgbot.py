@@ -332,8 +332,7 @@ def get_ss(update: Update, context):
 
 def get_apt_list(update: Update, context):
     client = connectToRemote()
-    passwd = os.getenv('RM_PASSWORD')
-    stdin, stdout, stderr = client.exec_command(f'echo {passwd} | sudo -S service --status-all | head')
+    stdin, stdout, stderr = client.exec_command('apt list | head')
     data = stdout.read() + stderr.read()
     client.close()
     data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
@@ -342,7 +341,8 @@ def get_apt_list(update: Update, context):
 
 def get_services(update: Update, context):
     client = connectToRemote()
-    stdin, stdout, stderr = client.exec_command('service --status-all | head')
+    passwd = os.getenv('RM_PASSWORD')
+    stdin, stdout, stderr = client.exec_command(f'echo {passwd} | sudo -S service --status-all | head')
     data = stdout.read() + stderr.read()
     client.close()
     data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
