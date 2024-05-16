@@ -350,7 +350,7 @@ def get_ss(update: Update, context):
 
 def get_apt_list(update: Update, context):
     client = connectToRemote()
-    stdin, stdout, stderr = client.exec_command('apt list | head')
+    stdin, stdout, stderr = client.exec_command('apt list --installed | head')
     data = stdout.read() + stderr.read()
     client.close()
     decoded_data = data.decode('utf-8')
