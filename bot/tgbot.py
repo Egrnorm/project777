@@ -85,7 +85,8 @@ def findEmailAddressCommand(update: Update, context):
 def findEmailAddress(update: Update, context):
     global emails
     user_input = update.message.text
-    emailRegex = re.compile(r'\w+@+\w+.+\w+') # какойтотекст@какойтотекст.какойтотекст
+    emailRegex = re.compile(r'\b[a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]+(?:\.[a-zA-Z0-9.!#$%&\'*+/=?^_`{|}~-]+)*' \
+                 r'@(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,}\b') # какойтотекст@какойтотекст.какойтотекст
 
     emailList = emailRegex.findall(user_input)
     emailList = list(set(emailList))
@@ -157,7 +158,7 @@ def connectToRemote():
 
 
 def get_repl_logs(update: Update, context):
-    command = "cat /tmp/postgresql.log | tail -n 15"
+    command = "cat /tmp/postgresql.log | grep repl"
     res = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     if res.returncode != 0 or res.stderr.decode() != "":
         update.message.reply_text("Can not open log file!")
@@ -223,16 +224,16 @@ def connectToKali():
 
 def get_uname(update: Update, context):
     client = connectToRemote()
-    stdin, stdout, stderr = client.exec_command('uname')
+    stdin, stdout, stderr = client.exec_command('uname -a')
     data = stdout.read() + stderr.read()
     client.close()
-    data = str(data).replace('\\n', '\n').replace('\\t', '\t')
+    data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
     update.message.reply_text(data)
     return ConversationHandler.END
 
 def get_release(update: Update, context):
     client = connectToRemote()
-    stdin, stdout, stderr = client.exec_command('uname -r')
+    stdin, stdout, stderr = client.exec_command('lsb_release -a')
     data = stdout.read() + stderr.read()
     client.close()
     decoded_data = data.decode('utf-8')
@@ -384,6 +385,7 @@ def helpCommand(update: Update, context):
                 "/verify_password\n" \
                 "/get_w\n" \
                 "/get_release\n" \
+                "/get_uname\n" \
                 "/get_uptime\n" \
                 "/get_df\n" \
                 "/get_free\n" \
