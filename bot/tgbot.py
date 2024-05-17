@@ -378,7 +378,7 @@ def get_apt_list_answer(update: Update, context):
 
 def get_services(update: Update, context):
     client = connectToRemote()
-    stdin, stdout, stderr = client.exec_command('systemctl list-units --type=service | grep running | head')
+    stdin, stdout, stderr = client.exec_command('service --status-all | grep [+]')
     data = stdout.read() + stderr.read()
     client.close()
     decoded_data = data.decode('utf-8')
