@@ -349,15 +349,32 @@ def get_ss(update: Update, context):
     return ConversationHandler.END
 
 def get_apt_list(update: Update, context):
-    client = connectToRemote()
-    stdin, stdout, stderr = client.exec_command('apt list --installed | head')
-    data = stdout.read() + stderr.read()
-    client.close()
-    decoded_data = data.decode('utf-8')
-    decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')
+    update.message.reply_text("Введи либо показать все пакеты, либо только один. Если все - напиши Все, если какой-то конркетный - напиши название")
+    return 'get_apt_list_answer'
 
-    update.message.reply_text(decoded_data)
-    return ConversationHandler.END
+def get_apt_list_answer(update: Update, context):
+    answer = update.message.text
+
+    if (answer == 'Все'):
+        client = connectToRemote()
+        stdin, stdout, stderr = client.exec_command('apt list --installed | head')
+        data = stdout.read() + stderr.read()
+        client.close()
+        decoded_data = data.decode('utf-8')
+        decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')
+
+        update.message.reply_text(decoded_data)
+        return ConversationHandler.END
+    else:
+        client = connectToRemote()
+        stdin, stdout, stderr = client.exec_command(f'apt list --installed | grep {answer}')
+        data = stdout.read() + stderr.read()
+        client.close()
+        decoded_data = data.decode('utf-8')
+        decoded_data = str(decoded_data).replace('\\n', '\n').replace('\\t', '\t')
+
+        update.message.reply_text(decoded_data)
+        return ConversationHandler.END
 
 def get_services(update: Update, context):
     client = connectToRemote()
@@ -430,6 +447,17 @@ def main():
         fallbacks=[]
     )
 
+
+    conv_get_apt_list = ConversationHandler(
+        entry_points=[CommandHandler('get_apt_list', get_apt_list)],
+        states={
+            'get_apt_list': [MessageHandler(Filters.text & ~Filters.command, get_apt_list)],
+            'get_apt_list_answer': [MessageHandler(Filters.text & ~Filters.command, get_apt_list_answer)]
+        },
+        fallbacks=[]
+    )
+
+
     getWHander = CommandHandler('get_w', get_w)
     dp.add_handler(getWHander)
     get_releaseHander = CommandHandler('get_release', get_release)
@@ -450,8 +478,6 @@ def main():
     dp.add_handler(get_psHander)
     get_ssHander = CommandHandler('get_ss', get_ss)
     dp.add_handler(get_ssHander)
-    get_apt_listHander = CommandHandler('get_apt_list', get_apt_list)
-    dp.add_handler(get_apt_listHander)
     get_servicesHander = CommandHandler('get_services', get_services)
     dp.add_handler(get_servicesHander)
 
@@ -471,6 +497,7 @@ def main():
     dp.add_handler(convHandlerFindNumbers)
     dp.add_handler(convHandlerEmailAddress)
     dp.add_handler(convHandlerVerifyPassword)
+    dp.add_handler(conv_get_apt_list)
     dp.add_handler(MessageHandler(Filters.text & ~Filters.command, echo))
 
     updater.start_polling()
