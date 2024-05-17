@@ -221,18 +221,9 @@ def connectToKali():
     return client
 
 
-def get_release(update: Update, context):
-    client = connectToRemote()
-    stdin, stdout, stderr = client.exec_command('uname -r')
-    data = stdout.read() + stderr.read()
-    client.close()
-    data = str(data).replace('\\n', '\n').replace('\\t', '\t')[2:-1]
-    update.message.reply_text(data)
-    return ConversationHandler.END
-
 def get_uname(update: Update, context):
     client = connectToRemote()
-    stdin, stdout, stderr = client.exec_command('uname -r')
+    stdin, stdout, stderr = client.exec_command('uname')
     data = stdout.read() + stderr.read()
     client.close()
     data = str(data).replace('\\n', '\n').replace('\\t', '\t')
@@ -462,6 +453,8 @@ def main():
     dp.add_handler(getWHander)
     get_releaseHander = CommandHandler('get_release', get_release)
     dp.add_handler(get_releaseHander)
+    get_unameHander = CommandHandler('get_uname', get_uname)
+    dp.add_handler(get_unameHander)
     get_uptimeHander = CommandHandler('get_uptime', get_uptime)
     dp.add_handler(get_uptimeHander)
     get_dfHander = CommandHandler('get_df', get_df)
